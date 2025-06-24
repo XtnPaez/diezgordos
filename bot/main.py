@@ -1,14 +1,16 @@
-from twitter_api import create_api
+import random
+from twitter_api import tweet
 
-def post_tweet():
-    api = create_api()
-    tweet = "🐦 Esto es una prueba automática del bot #diezgordos"
+def main():
+    with open("data/frases.txt", "r", encoding="utf-8") as f:
+        frases = [line.strip() for line in f if line.strip()]
+    if not frases:
+        print("No hay frases para twittear.")
+        return
 
-    try:
-        status = api.update_status(tweet)
-        print(f"✅ Tweet posteado correctamente: https://twitter.com/i/web/status/{status.id}")
-    except Exception as e:
-        print("❌ Error al postear:", e)
+    frase = random.choice(frases)
+    tweet(frase)
+    print(f"Tuiteado: {frase}")
 
 if __name__ == "__main__":
-    post_tweet()
+    main()

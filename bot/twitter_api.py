@@ -1,21 +1,22 @@
-import os
 import tweepy
+import os
+from dotenv import load_dotenv
 
-API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
+load_dotenv()  # carga variables desde .env si existiera
 
-def create_api():
-    if not all([API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET]):
-        raise Exception("❌ Faltan variables de entorno con las credenciales.")
+def create_client():
+    consumer_key = os.getenv("TWITTER_API_KEY")
+    consumer_secret = os.getenv("TWITTER_API_SECRET")
+    access_token = os.getenv("TWITTER_ACCESS_TOKEN")
+    access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
-    auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-    api = tweepy.API(auth, wait_on_rate_limit=True)
-    try:
-        api.verify_credentials()
-        print("🔐 Autenticación API v1.1 exitosa")
-    except Exception as e:
-        print("❌ Error autenticando API v1.1:", e)
-        raise e
-    return api
+    auth = tweepy.OAuth1UserHandler(
+        consumer_key, consumer_secret,
+        access_token, access_token_secret
+    )
+    client = tweepy.API(auth)
+    return client
+
+def tweet(status):
+    client = create_client()
+    client.update_status(status)
